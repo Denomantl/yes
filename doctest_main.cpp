@@ -1,6 +1,7 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
-//#include "doctest.h"
+#include "doctest.h"
 #include <iostream>
+#include <utility>
 #include <vector>
 class bigint{
     std::vector<char> number;
@@ -17,19 +18,19 @@ public:
     bigint(){
         number = {'0'};
     }
-    explicit bigint(const std::string& a){
+    bigint(const std::string& a){
         for (char i: a){
             number.push_back(i);
         }
     }
-    explicit bigint(int a){
+    bigint(int a){
         std::string c;
         c = std::to_string(a);
         for (char i: c){
             number.push_back(i);
         }
     }
-    std::string to_string(){
+     std::string to_string ()const{
         std::string answer;
         for (char i: number){
             answer+=i;
@@ -131,6 +132,42 @@ bool operator>=(bigint a, int b){
     return a.toInt() >= b;
 };
 
+bool operator>=(bigint a, const std::string& b){
+    bigint c(b);
+    return std::move(a) >= c;
+};
+
+bool operator>=(const std::string& a, bigint b){
+    bigint c(a);
+    return c >= std::move(b);
+};
+bool operator>(bigint a, const std::string& b){
+    bigint c(b);
+    return std::move(a) > c;
+};
+
+bool operator>(const std::string& a, bigint b){
+    bigint c(a);
+    return c > std::move(b);
+};
+bool operator<=(bigint a, const std::string& b){
+    bigint c(b);
+    return std::move(a) <= c;
+};
+
+bool operator<=(const std::string& a, bigint b){
+    bigint c(a);
+    return c <= std::move(b);
+};
+bool operator<(bigint a, const std::string& b){
+    bigint c(b);
+    return std::move(a) < c;
+};
+
+bool operator<(const std::string& a, bigint b){
+    bigint c(a);
+    return c < std::move(b);
+};
 bigint operator +(bigint a, bigint b){
     int c = a.toInt()+b.toInt();
     bigint result(c);
@@ -141,7 +178,12 @@ bigint operator +=(bigint a, bigint b){
     bigint result(c);
     return result;
 }
-bigint operator ++(bigint a){
+bigint operator ++(bigint a, int){
+    int c = a.toInt()+1;
+    bigint result(c);
+    return result;
+}
+bigint operator ++(bigint a ){
     int c = a.toInt()+1;
     bigint result(c);
     return result;
@@ -158,6 +200,11 @@ bigint operator -=(bigint a, bigint b){
     return result;
 }
 bigint operator --(bigint a){
+    int c = a.toInt()-1;
+    bigint result(c);
+    return result;
+}
+bigint operator --(bigint a, int){
     int c = a.toInt()-1;
     bigint result(c);
     return result;
